@@ -1,0 +1,91 @@
+# config/sample_config.yaml
+
+version: "2.1.0"
+description: "Sample configuration for NANA 1 AI trading system using MomentumStrategy"
+
+# === Environment ===
+environment: "paper"  # Options: live, paper, backtest
+timezone: "UTC"
+instance_id: "nana-momentum-01"
+
+# === Core Execution ===
+core:
+  max_threads: 8
+  api_timeout: 30.0
+  cache_size: 65536
+  circuit_breaker:
+    max_errors: 5
+    reset_timeout: 300
+
+# === Strategy Definitions ===
+bots:
+  - name: "momentum_bot_01"
+    enabled: true
+    mode: "paper"
+    strategy: "MomentumStrategy"
+    exchange: "binance"
+    markets:
+      - symbol: "BTC/USDT"
+        base_asset: "BTC"
+        quote_asset: "USDT"
+    config:
+      name: "quant_momentum_v3"
+      version: "2.2.1"
+      history_window: 500
+      rsi_period: 21
+      rsi_overbought: 65.0
+      rsi_oversold: 35.0
+      sma_fast_period: 10
+      sma_slow_period: 50
+      order_type: "stop_limit"
+      time_in_force: "DAY"
+      slippage_tolerance: 0.008
+      enable_dynamic_params: true
+      rebalance_interval: 900  # seconds (15 min)
+      plugin_confidence_threshold: 0.75
+      max_concurrent_trades: 3
+      tags: ["momentum", "btc", "ai"]
+      description: "AI-powered momentum strategy with RSI and SMA crossover"
+
+      risk:
+        max_position_size: 0.2
+        stop_loss_pct: 0.04
+        take_profit_pct: 0.12
+        max_leverage: 5
+        risk_per_trade: 0.03
+        cool_off_period: 900  # seconds (15 min)
+
+# === Logging ===
+logging:
+  level: "DEBUG"
+  to_file: true
+  file_path: "logs/nana1.log"
+  rotation: "10 MB"
+  retention: 5
+  json_format: false
+
+# === Monitoring ===
+metrics:
+  enabled: true
+  exporter: "prometheus"
+  port: 9100
+
+# === Plugins ===
+plugins:
+  enabled: true
+  sources:
+    - "plugins.signal_rsi_volume.py"
+    - "plugins.nlp_sentiment.py"
+    - "plugins.chain_whale_alerts.py"
+
+# === Market Observer ===
+datafeeds:
+  - name: "binance_spot"
+    exchange: "binance"
+    symbols:
+      - "BTC/USDT"
+    polling_interval: 15  # seconds
+    retry_interval: 5
+    max_retries: 3
+    simulate_if_unavailable: true
+
