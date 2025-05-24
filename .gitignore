@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.env
+.env
+secrets/
+*.log
+.DS_Store
+*.zip
+venv/
+nana1-env/
+
